@@ -1,20 +1,18 @@
-TARGET      ?= hocoslamfy
+TARGET      ?= hocoslamfy-bb10
 
-ifeq ($(TARGET), hocoslamfy-od)
-  CC        := mipsel-linux-gcc
-  STRIP     := mipsel-linux-strip
-  OBJS       = platform/opendingux.o
-  DEFS      := -DOPK
-else
-  CC        := gcc
-  STRIP     := strip
-  OBJS       = platform/general.o
+# Adjust this for your key if needed
+TOKEN=~/Development/BlackBerry/keys/debug_token_all.bar
+
+ifeq ($(TARGET), hocoslamfy-bb10)
+  CC        := arm-unknown-nto-qnx8.0.0eabi-gcc
+  STRIP     := arm-unknown-nto-qnx8.0.0eabi-strip
+  OBJS       = platform/generic.o
   DEFS      := 
 endif
 
-SYSROOT     := $(shell $(CC) --print-sysroot)
-SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
+SYSROOT	    := $(QNX_TARGET)/armle-v7
+SDL_CFLAGS  := $(shell $(SYSROOT)/bin/sdl-config --cflags)
+SDL_LIBS    := $(shell $(SYSROOT)/bin/sdl-config --libs)
 
 OBJS        += main.o init.o title.o game.o score.o audio.o bg.o text.o unifont.o
               
@@ -34,6 +32,14 @@ include Makefile.rules
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
+
+bar: $(TARGET).bar
+
+$(TARGET).bar: $(TARGET)
+	blackberry-nativepackager -package $(TARGET)-release.bar bar-descriptor-bb10.xml
+
+bar-debug: $(TARGET)
+	blackberry-nativepackager -devMode -debugToken $(TOKEN) -package $(TARGET)-debug.bar bar-descriptor-bb10.xml
 
 opk: $(TARGET).opk
 
