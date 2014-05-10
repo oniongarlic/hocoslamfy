@@ -6,7 +6,7 @@ TOKEN=~/Development/BlackBerry/keys/debug_token_all.bar
 ifeq ($(TARGET), hocoslamfy-bb10)
   CC        := arm-unknown-nto-qnx8.0.0eabi-gcc
   STRIP     := arm-unknown-nto-qnx8.0.0eabi-strip
-  OBJS       = platform/generic.o
+  OBJS       = platform/blackberry.o
   DEFS      := 
 endif
 
