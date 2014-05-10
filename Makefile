@@ -7,7 +7,14 @@ ifeq ($(TARGET), hocoslamfy-bb10)
   CC        := arm-unknown-nto-qnx8.0.0eabi-gcc
   STRIP     := arm-unknown-nto-qnx8.0.0eabi-strip
   OBJS       = platform/blackberry.o
-  DEFS      := 
+  DEFS      := -DBB -DBB10
+else
+ifeq ($(TARGET), hocoslamfy-pb)
+  CC        := arm-unknown-nto-qnx6.5.0eabi-gcc
+  STRIP     := arm-unknown-nto-qnx6.5.0eabi-strip
+  OBJS       = platform/blackberry.o
+  DEFS      := -DBB -DBBPB
+endif
 endif
 
 SYSROOT	    := $(QNX_TARGET)/armle-v7
