@@ -4,22 +4,31 @@ TARGET      ?= hocoslamfy-bb10
 TOKEN=~/Development/BlackBerry/keys/debug_token_all.bar
 
 ifeq ($(TARGET), hocoslamfy-bb10)
+  SYSROOT   := $(QNX_TARGET)/armle-v7
+  SDL_CFLAGS:= $(shell $(SYSROOT)/bin/sdl-config --cflags)
+  SDL_LIBS  := $(shell $(SYSROOT)/bin/sdl-config --libs)
+
   CC        := arm-unknown-nto-qnx8.0.0eabi-gcc
   STRIP     := arm-unknown-nto-qnx8.0.0eabi-strip
   OBJS       = platform/blackberry.o
   DEFS      := -DBB -DBB10
 else
 ifeq ($(TARGET), hocoslamfy-pb)
+  SYSROOT   := $(QNX_TARGET)/armle-v7
+  SDL_CFLAGS:= $(shell $(SYSROOT)/bin/sdl-config --cflags)
+  SDL_LIBS  := $(shell $(SYSROOT)/bin/sdl-config --libs)
+
   CC        := arm-unknown-nto-qnx6.5.0eabi-gcc
   STRIP     := arm-unknown-nto-qnx6.5.0eabi-strip
   OBJS       = platform/blackberry.o
   DEFS      := -DBB -DBBPB
 endif
+else
+SYSROOT     := $(shell $(CC) --print-sysroot)
+SDL_CONFIG  ?= $(SYSROOT)/usr/bin/sdl-config
+SDL_CFLAGS  := $(shell $(SDL_CONFIG) --cflags)
+SDL_LIBS    := $(shell $(SDL_CONFIG) --libs)
 endif
-
-SYSROOT	    := $(QNX_TARGET)/armle-v7
-SDL_CFLAGS  := $(shell $(SYSROOT)/bin/sdl-config --cflags)
-SDL_LIBS    := $(shell $(SYSROOT)/bin/sdl-config --libs)
 
 OBJS        += main.o init.o title.o game.o score.o audio.o bg.o text.o unifont.o
               
@@ -31,6 +40,10 @@ DEFS        +=
 CFLAGS       = $(SDL_CFLAGS) -Wall -Wno-unused-variable \
                -O2 -fomit-frame-pointer $(DEFS) $(INCLUDE)
 LDFLAGS     := $(SDL_LIBS) -lm -lSDL_image -lSDL_mixer
+
+ifneq (, $(findstring MINGW, $(shell uname -s)))
+	CFLAGS+=-DDONT_USE_PWD
+endif
 
 include Makefile.rules
 
