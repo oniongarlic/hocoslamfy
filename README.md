@@ -6,6 +6,5 @@ This game requires SDL 1.2, SDL-image 1.2, SDL-mixer 1.2 and a C compiler. It is
 
 Everything's under the GPL version 2.
 
-To compile this for PC, use `make clean; make` on a PC with SDL, SDL-image and SDL-mixer 1.2. You'll then get a windowed SDL game.
+This version is for QNX BB10 (and PlayBook) devices only (for now)
 
-To compile this for OpenDingux, use `make TARGET=hocoslamfy-od clean; make TARGET=hocoslamfy-od opk` on a PC with the `PATH` set to include your OpenDingux mipsel toolchain.
